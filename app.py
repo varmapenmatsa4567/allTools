@@ -4,8 +4,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user,logout_user, current_user, login_required
 from flask_mail import Mail, Message
 from random import randint
-from pyzbar.pyzbar import decode
-from PIL import Image
 import os
 import datetime
 from io import BytesIO
@@ -150,20 +148,6 @@ def deleteTodo(todo_id):
     db.session.commit()
     return redirect(url_for("todoApp"))
 
-@app.route("/qrCodeScanner")
-@login_required
-def qrCodeScanner():
-    return render_template("scanner.html")
-
-@app.route("/scanQr", methods=['GET','POST'])
-@login_required
-def scanQr():
-    f = request.files['file']
-    f.save(os.path.join("images", f.filename))
-    d = decode(Image.open("images/"+f.filename))
-    j = str(d[0].data.decode('ascii'))
-    os.remove("images/"+f.filename)
-    return render_template("scanner.html", data=j)
 
 @app.route("/fileShare")
 @login_required
